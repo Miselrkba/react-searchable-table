@@ -11,8 +11,10 @@ const fetchUsers = async () => {
   const { data } = await axios.get(
     "https://jsonplaceholder.typicode.com/users/"
   );
-  return { data };
+  return { data }
 };
+
+
 
 export default function App() {
   const [searchVal, setSearchVal] = useState(null);
