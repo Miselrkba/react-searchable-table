@@ -1,51 +1,104 @@
-import React, { useState } from "react";
-import { Table, Input } from "antd";
-import axios from "axios";
-import { userColumns } from "./columns";
-import { useTableSearch } from "./useTableSearch";
-import "antd/dist/antd.css";
+import React, { useState, useEffect } from "react";
 
-const { Search } = Input;
+const people = [
+  "Siri",
+  "Alexa",
+  "Google",
+  "Facebook",
+  "Twitter",
+  "Linkedin",
+  "Sinkedin",
+];
 
-const fetchUsers = async () => {
-  const { data } = await axios.get(
-    "https://jsonplaceholder.typicode.com/users/"
-  );
-  return { data }
-};
+const usersData = [
+  {
+    id: 1,
+    firstName: "Tania",
+    lastName: "floppydiskette",
+    email: "dsadsad@gmail.com",
+    telephone: "123135",
+  },
+  {
+    id: 2,
+    firstName: "Mario",
+    lastName: "Jeremy",
+    email: "duytuyusad@gmail.com",
+    telephone: "123135",
+  },
+  {
+    id: 3,
+    firstName: "Robbie",
+    lastName: "Lawrel",
+    email: "drewrewd@gmail.com",
+    telephone: "123135",
+  },
+];
 
+const search = [Object.keys(usersData)].filter((item) => item === "Tania");
 
+console.log(search);
 
-export default function App() {
-  const [searchVal, setSearchVal] = useState(null);
+function App() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState(usersData);
 
-  const { filteredData, loading } = useTableSearch({
-    searchVal,
-    retrieve: fetchUsers,
-  });
+  const handleChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const headers = ["id", "firstName", "lastName", "actions"];
+  const generateHeaders = headers.map((item) => (
+    <th key={item}>
+      <a href="/#"> {item}</a>
+    </th>
+  ));
+
+  const generateData = searchResults.map((user) => (
+    <tr key={user.id}>
+      <td>{user.id}</td>
+      <td>{user.firstName}</td>
+      <td>{user.lastName}</td>
+      <td>
+        <a href="/#">Delete</a>
+        <br />
+        <a href="/#">Edit</a>
+      </td>
+    </tr>
+  ));
+
+  useEffect(() => {
+    if (searchTerm && searchTerm.length > 0) {
+      const results2 = usersData.filter((user) => {
+        return (
+          user.firstName.toLowerCase().includes(searchTerm) ||
+          user.lastName.toLowerCase().includes(searchTerm)
+        );
+      });
+      setSearchResults(results2);
+    }
+  }, [searchTerm]);
 
   return (
-    <>
-      <Search
-        onChange={(e) => setSearchVal(e.target.value)}
+    <div className="App">
+      <input
+        type="text"
         placeholder="Search"
-        enterButton
-        style={{
-          position: "sticky",
-          top: "0",
-          left: "0",
-          width: "200px",
-          marginTop: "2vh",
-        }}
+        value={searchTerm}
+        onChange={handleChange}
       />
-      <br /> <br />
-      <Table
-        rowKey="name"
-        dataSource={filteredData}
-        columns={userColumns}
-        loading={loading}
-        pagination={false}
-      />
-    </>
+      {/* <ul>
+        {searchResults.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul> */}
+      <table>
+        <thead>
+          <tr>{generateHeaders}</tr>
+        </thead>
+        <tbody>{generateData}</tbody>
+      </table>
+    </div>
   );
 }
+
+export default App;
