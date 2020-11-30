@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
 
+const people = [
+  "Siri",
+  "Alexa",
+  "Google",
+  "Facebook",
+  "Twitter",
+  "Linkedin",
+  "Sinkedin",
+];
+
 const usersData = [
   {
     id: 1,
@@ -24,6 +34,9 @@ const usersData = [
   },
 ];
 
+const search = [Object.keys(usersData)].filter((item) => item === "Tania");
+
+console.log(search);
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -54,14 +67,15 @@ function App() {
   ));
 
   useEffect(() => {
-    const results2 = usersData.filter((user) => {
-      return (
-        user.firstName.toLowerCase().includes(searchTerm) ||
-        user.lastName.toLowerCase().includes(searchTerm)
-      );
-    });
-
-    setSearchResults(results2);
+    if (searchTerm && searchTerm.length > 0) {
+      const results2 = usersData.filter((user) => {
+        return (
+          user.firstName.toLowerCase().includes(searchTerm) ||
+          user.lastName.toLowerCase().includes(searchTerm)
+        );
+      });
+      setSearchResults(results2);
+    }
   }, [searchTerm]);
 
   return (
@@ -72,6 +86,11 @@ function App() {
         value={searchTerm}
         onChange={handleChange}
       />
+      {/* <ul>
+        {searchResults.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul> */}
       <table>
         <thead>
           <tr>{generateHeaders}</tr>
